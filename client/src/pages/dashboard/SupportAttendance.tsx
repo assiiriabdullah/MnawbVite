@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../hooks/useApi';
-import Modal, { Card, SectionHeader, EmptyState, Skeleton } from '../../components/UI';
+import Modal, { Card, SectionHeader, EmptyState, Skeleton, Button } from '../../components/UI';
 import { StatusBadge } from '../../components/Badge';
-import { Shield, Eye, Sun, Sunset, Moon } from 'lucide-react';
+import { Shield, Eye, Sun, Sunset, Moon, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const groupIcons: Record<string, any> = { morning: <Sun size={16} />, afternoon: <Sunset size={16} />, night: <Moon size={16} /> };
@@ -21,6 +21,18 @@ export default function SupportAttendance() {
     try {
       const data = await api(`/api/support-attendance/reports/${id}/full`);
       setDetail(data);
+    } catch {}
+  };
+
+  const deleteReport = async (id: number) => {
+    if (!confirm('هل أنت متأكد من حذف كشف هذا اليوم بالكامل؟ هذا الإجراء سيسمح للمشرفين بإعادة التحضير اليومي.')) return;
+    try {
+      await api(`/api/support-attendance/reports/${id}`, 'DELETE');
+      setDetail(null);
+      setLoading(true);
+      const data = await api('/api/support-attendance/reports/approved');
+      setReports(data);
+      setLoading(false);
     } catch {}
   };
 
@@ -130,6 +142,18 @@ export default function SupportAttendance() {
                   <img src={detail.report.closing_signature} alt="توقيع الليل" className="h-12 object-contain bg-white border rounded p-1" />
                 </div>
               )}
+            </div>
+
+            {/* Reset/Delete Action */}
+            <div className="flex justify-end pt-4 mt-6 border-t border-gray-100">
+              <Button 
+                variant="danger" 
+                onClick={() => deleteReport(detail.report.id)}
+                className="flex items-center gap-1.5"
+              >
+                <Trash2 size={16} className="ml-1" />
+                حذف الكشف وإعادة التهيئة
+              </Button>
             </div>
           </div>
         )}

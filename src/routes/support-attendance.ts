@@ -612,4 +612,32 @@ router.get('/my-status', requireAuth, (req: Request, res: Response) => {
     });
 });
 
+// DELETE /api/support-attendance/reports/:id - Delete daily report (manager only)
+router.delete('/reports/:id', requireAuth, (req: Request, res: Response) => {
+    if (!isManager(req)) {
+        res.status(403).json({ error: 'غير مصرح - صلاحية المدير فقط' });
+        return;
+    }
+
+    const { id } = req.params;
+    const report = db.prepare('SELECT * FROM support_daily_reports WHERE id = ?').get(Number(id)) as any;
+
+    if (!report) {
+        res.status(404).json({ error: 'الكشف غير موجود' });
+        return;
+    }
+
+    try {
+        db.prepare('DELETE FROM support_daily_reports WHERE id = ?').run(Number(id));
+        
+        const user = req.session.user!;
+        logActivity(user.id, user.name, 'حذف كشف مساندة', 'مساندة', `التاريخ: ${report.date}`);
+
+        res.json({ message: 'تم حذف كشف المساندة بنجاح ويمكن الآن إعادة تحضير اليوم' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'حدث خطأ أثناء حذف الكشف' });
+    }
+});
+
 export default router;
