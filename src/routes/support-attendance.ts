@@ -117,9 +117,11 @@ router.get('/reports/today', requireAuth, (req: Request, res: Response) => {
     // Get records for each session
     for (const session of sessions) {
         session.records = db.prepare(`
-            SELECT sar.*, e.name as employee_name, e.role as employee_role, e.support_group
+            SELECT sar.*, e.name as employee_name, e.role as employee_role, e.support_group,
+                   es.signature_data as employee_signature
             FROM support_attendance_records sar
             JOIN employees e ON e.id = sar.employee_id
+            LEFT JOIN employee_signatures es ON es.employee_id = sar.employee_id
             WHERE sar.session_id = ?
             ORDER BY e.name
         `).all(session.id);
@@ -557,9 +559,11 @@ router.get('/reports/:id/full', requireAuth, (req: Request, res: Response) => {
 
     for (const session of sessions) {
         session.records = db.prepare(`
-            SELECT sar.*, e.name as employee_name, e.role as employee_role, e.support_group
+            SELECT sar.*, e.name as employee_name, e.role as employee_role, e.support_group,
+                   es.signature_data as employee_signature
             FROM support_attendance_records sar
             JOIN employees e ON e.id = sar.employee_id
+            LEFT JOIN employee_signatures es ON es.employee_id = sar.employee_id
             WHERE sar.session_id = ?
             ORDER BY e.name
         `).all(session.id);

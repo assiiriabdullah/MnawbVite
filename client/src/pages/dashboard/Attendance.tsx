@@ -105,12 +105,28 @@ export default function Attendance() {
                     <td className="px-4 py-2 font-medium text-gray-800">{r.employee_name}</td>
                     <td className="px-4 py-2"><StatusBadge status={r.status} /></td>
                     <td className="px-4 py-2 text-xs text-gray-500">
-                      {r.check_in_time ? new Date(r.check_in_time + 'Z').toLocaleTimeString('ar-SA') : '-'}
-                      {r.check_in_signature && <span className="text-emerald-500 mr-1">✓</span>}
+                      <div className="flex items-center gap-2">
+                        <span>{r.check_in_time ? new Date(r.check_in_time + 'Z').toLocaleTimeString('ar-SA') : '-'}</span>
+                        {(r.check_in_signature || (r.check_in_time && r.employee_signature)) && (
+                          <img 
+                            src={r.check_in_signature || r.employee_signature} 
+                            alt="توقيع" 
+                            className="h-7 max-w-[80px] object-contain border border-gray-100 rounded bg-white p-0.5"
+                          />
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-500">
-                      {r.check_out_time ? new Date(r.check_out_time + 'Z').toLocaleTimeString('ar-SA') : '-'}
-                      {r.check_out_signature && <span className="text-emerald-500 mr-1">✓</span>}
+                      <div className="flex items-center gap-2">
+                        <span>{r.check_out_time ? new Date(r.check_out_time + 'Z').toLocaleTimeString('ar-SA') : '-'}</span>
+                        {(r.check_out_signature || (r.check_out_time && r.employee_signature)) && (
+                          <img 
+                            src={r.check_out_signature || r.employee_signature} 
+                            alt="توقيع" 
+                            className="h-7 max-w-[80px] object-contain border border-gray-100 rounded bg-white p-0.5"
+                          />
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-400">{r.note || '-'}</td>
                   </tr>

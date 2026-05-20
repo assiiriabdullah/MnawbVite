@@ -110,9 +110,11 @@ router.get('/sessions/current', requireSupervisor, (req: Request, res: Response)
 
     // Get records with employee info
     const records = db.prepare(`
-        SELECT ar.*, e.name as employee_name, e.role as employee_role, e.username as employee_username
+        SELECT ar.*, e.name as employee_name, e.role as employee_role, e.username as employee_username,
+               es.signature_data as employee_signature
         FROM attendance_records ar
         JOIN employees e ON e.id = ar.employee_id
+        LEFT JOIN employee_signatures es ON es.employee_id = ar.employee_id
         WHERE ar.session_id = ?
         ORDER BY 
             CASE e.role WHEN 'supervisor' THEN 0 ELSE 1 END,
@@ -146,9 +148,11 @@ router.get('/sessions/:id', requireAuth, (req: Request, res: Response) => {
     }
 
     const records = db.prepare(`
-        SELECT ar.*, e.name as employee_name, e.role as employee_role
+        SELECT ar.*, e.name as employee_name, e.role as employee_role,
+               es.signature_data as employee_signature
         FROM attendance_records ar
         JOIN employees e ON e.id = ar.employee_id
+        LEFT JOIN employee_signatures es ON es.employee_id = ar.employee_id
         WHERE ar.session_id = ?
         ORDER BY 
             CASE e.role WHEN 'supervisor' THEN 0 ELSE 1 END,
@@ -479,9 +483,11 @@ router.get('/approved/:id', requireAuth, (req: Request, res: Response) => {
     }
 
     const records = db.prepare(`
-        SELECT ar.*, e.name as employee_name, e.role as employee_role, e.username as employee_username
+        SELECT ar.*, e.name as employee_name, e.role as employee_role, e.username as employee_username,
+               es.signature_data as employee_signature
         FROM attendance_records ar
         JOIN employees e ON e.id = ar.employee_id
+        LEFT JOIN employee_signatures es ON es.employee_id = ar.employee_id
         WHERE ar.session_id = ?
         ORDER BY 
             CASE e.role WHEN 'supervisor' THEN 0 ELSE 1 END,
