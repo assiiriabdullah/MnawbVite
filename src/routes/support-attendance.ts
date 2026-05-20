@@ -46,7 +46,13 @@ function getToday(): string {
 // POST /api/support-attendance/reports - Create daily report + 3 sessions
 router.post('/reports', requireSupervisorAuth, (req: Request, res: Response) => {
     const user = req.session.user!;
+    const { signature } = req.body;
     const today = getToday();
+
+    if (!signature) {
+        res.status(400).json({ error: 'التوقيع الافتتاحي مطلوب لإنشاء الكشف' });
+        return;
+    }
 
     // Check if report already exists
     const existing = db.prepare('SELECT id, status FROM support_daily_reports WHERE date = ?').get(today) as any;
@@ -57,8 +63,8 @@ router.post('/reports', requireSupervisorAuth, (req: Request, res: Response) => 
 
     try {
         const result = db.prepare(`
-            INSERT INTO support_daily_reports (date) VALUES (?)
-        `).run(today);
+            INSERT INTO support_daily_reports (date, opening_supervisor_id, opening_signature) VALUES (?, ?, ?)
+        `).run(today, user.id, signature);
         const reportId = result.lastInsertRowid;
 
         // Create 3 sessions
@@ -89,10 +95,11 @@ router.get('/reports/today', requireAuth, (req: Request, res: Response) => {
     const today = getToday();
 
     const report = db.prepare(`
-        SELECT r.*, e1.name as submitted_by_name, e2.name as approved_by_name
+        SELECT r.*, e1.name as submitted_by_name, e2.name as approved_by_name, e3.name as opening_supervisor_name
         FROM support_daily_reports r
         LEFT JOIN employees e1 ON e1.id = r.submitted_by
         LEFT JOIN employees e2 ON e2.id = r.approved_by
+        LEFT JOIN employees e3 ON e3.id = r.opening_supervisor_id
         WHERE r.date = ?
     `).get(today) as any;
 
@@ -476,9 +483,9 @@ router.put('/reports/:id/submit', requireSupervisorAuth, (req: Request, res: Res
 
     db.prepare(`
         UPDATE support_daily_reports 
-        SET status = 'completed', final_notes = ?, submitted_by = ?, submitted_at = datetime('now')
+        SET status = 'completed', final_notes = ?, submitted_by = ?, closing_signature = ?, submitted_at = datetime('now')
         WHERE id = ?
-    `).run(final_notes || null, user.id, Number(id));
+    `).run(final_notes || null, user.id, signature, Number(id));
 
     logActivity(user.id, user.name, 'رفع كشف مساندة', 'مساندة', `التاريخ: ${report.date}`);
 
@@ -494,18 +501,10 @@ router.get('/reports/approved', requireAuth, (req: Request, res: Response) => {
 
     const { date_from, date_to } = req.query;
     let query = `
-        SELECT r.*, e1.name as submitted_by_name,
-            (SELECT COUNT(*) FROM support_sessions ss 
-             JOIN support_attendance_records sar ON sar.session_id = ss.id 
-             WHERE ss.report_id = r.id AND sar.status = 'present') as total_present,
-            (SELECT COUNT(*) FROM support_sessions ss 
-             JOIN support_attendance_records sar ON sar.session_id = ss.id 
-             WHERE ss.report_id = r.id AND sar.status = 'absent') as total_absent,
-            (SELECT COUNT(*) FROM support_sessions ss 
-             JOIN support_attendance_records sar ON sar.session_id = ss.id 
-             WHERE ss.report_id = r.id) as total_count
+        SELECT r.*, e1.name as submitted_by_name, e2.name as opening_supervisor_name
         FROM support_daily_reports r
         LEFT JOIN employees e1 ON e1.id = r.submitted_by
+        LEFT JOIN employees e2 ON e2.id = r.opening_supervisor_id
         WHERE r.status IN ('completed', 'approved')
     `;
     const params: any[] = [];
@@ -534,9 +533,10 @@ router.get('/reports/:id/full', requireAuth, (req: Request, res: Response) => {
     const { id } = req.params;
 
     const report = db.prepare(`
-        SELECT r.*, e1.name as submitted_by_name
+        SELECT r.*, e1.name as submitted_by_name, e2.name as opening_supervisor_name
         FROM support_daily_reports r
         LEFT JOIN employees e1 ON e1.id = r.submitted_by
+        LEFT JOIN employees e2 ON e2.id = r.opening_supervisor_id
         WHERE r.id = ?
     `).get(Number(id)) as any;
 

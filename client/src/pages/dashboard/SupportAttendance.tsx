@@ -109,6 +109,28 @@ export default function SupportAttendance() {
                 </table>
               </div>
             ))}
+
+            {/* Signatures section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-100 pt-4 mt-6">
+              {detail.report?.opening_signature && (
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-gray-400 block mb-0.5">مشرف الصباح (توقيع افتتاحي)</span>
+                    <span className="font-bold text-gray-800 text-sm">{detail.report.opening_supervisor_name || 'مشرف الصباح'}</span>
+                  </div>
+                  <img src={detail.report.opening_signature} alt="توقيع الصباح" className="h-12 object-contain bg-white border rounded p-1" />
+                </div>
+              )}
+              {detail.report?.closing_signature && (
+                <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-gray-400 block mb-0.5">مشرف الليل (توقيع ختامي)</span>
+                    <span className="font-bold text-gray-800 text-sm">{detail.report.submitted_by_name || 'مشرف الليل'}</span>
+                  </div>
+                  <img src={detail.report.closing_signature} alt="توقيع الليل" className="h-12 object-contain bg-white border rounded p-1" />
+                </div>
+              )}
+            </div>
           </div>
         )}
       </Modal>

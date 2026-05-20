@@ -176,6 +176,17 @@ export function initializeDatabase(): void {
     // Ignore
   }
 
+  // Migration: Add support daily report columns
+  try {
+    db.exec(`ALTER TABLE support_daily_reports ADD COLUMN opening_supervisor_id INTEGER`);
+  } catch (e) { }
+  try {
+    db.exec(`ALTER TABLE support_daily_reports ADD COLUMN opening_signature TEXT`);
+  } catch (e) { }
+  try {
+    db.exec(`ALTER TABLE support_daily_reports ADD COLUMN closing_signature TEXT`);
+  } catch (e) { }
+
   // ========== SHIFT LEAVE SETTINGS TABLE ==========
   db.exec(`
     CREATE TABLE IF NOT EXISTS shift_leave_settings (
@@ -202,9 +213,13 @@ export function initializeDatabase(): void {
       submitted_at TEXT,
       approved_by INTEGER,
       approved_at TEXT,
+      opening_supervisor_id INTEGER,
+      opening_signature TEXT,
+      closing_signature TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (submitted_by) REFERENCES employees(id),
-      FOREIGN KEY (approved_by) REFERENCES employees(id)
+      FOREIGN KEY (approved_by) REFERENCES employees(id),
+      FOREIGN KEY (opening_supervisor_id) REFERENCES employees(id)
     );
 
     CREATE TABLE IF NOT EXISTS support_sessions (

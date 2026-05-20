@@ -59,7 +59,13 @@ export default function EmpSupportAttendance() {
 
   // Supervisor actions
   const createReport = async () => {
-    try { await api('/api/support-attendance/reports', 'POST'); toast('تم إنشاء كشف اليوم'); loadReport(); }
+    const sig = sigRef.current?.getData();
+    if (!sig) { toast('توقيع مشرف الصباح مطلوب لفتح الكشف اليومي', 'error'); return; }
+    try { 
+      await api('/api/support-attendance/reports', 'POST', { signature: sig }); 
+      toast('تم إنشاء كشف اليوم وتوقيعه افتتاحيّاً ✓'); 
+      loadReport(); 
+    }
     catch (e: any) { toast(e.message, 'error'); }
   };
 
@@ -138,18 +144,40 @@ export default function EmpSupportAttendance() {
         <SectionHeader title="كشف المساندة اليومي" subtitle={new Date().toLocaleDateString('ar-SA')} />
 
         {!report ? (
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 max-w-lg mx-auto">
             <Shield size={56} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 mb-4">لم يتم إنشاء كشف المساندة لليوم</p>
-            <Button onClick={createReport}><Plus size={16} /> إنشاء كشف اليوم</Button>
+            <p className="text-gray-500 font-bold mb-2 text-base">إنشاء كشف المساندة اليومي</p>
+            <p className="text-gray-400 text-xs mb-6 font-medium">يتطلب توقيع مشرف الصباح لفتح سجل اليوم</p>
+            <div className="mb-6 bg-white p-2 border rounded-xl shadow-sm">
+              <SignaturePad ref={sigRef} initialData={savedSig} />
+            </div>
+            <Button onClick={createReport} className="w-full" size="lg"><Plus size={16} /> فتح الكشف والتوقيع الافتتاحي</Button>
           </Card>
         ) : (
           <>
-            {/* Status bar */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-              <span className="text-sm font-medium text-gray-600">حالة الكشف</span>
-              <StatusBadge status={report.status} />
-            </div>
+            {/* Status and Signatures bar */}
+            <Card>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <span className="text-xs font-semibold text-gray-400 block mb-1">حالة الكشف اليومي</span>
+                  <StatusBadge status={report.status} />
+                </div>
+                {report.opening_signature && (
+                  <div>
+                    <span className="text-xs font-semibold text-gray-400 block mb-1">توقيع مشرف الصباح (الافتتاحي)</span>
+                    <p className="text-xs font-bold text-gray-700 mb-1">{report.opening_supervisor_name || 'مشرف الصباح'}</p>
+                    <img src={report.opening_signature} alt="توقيع الصباح" className="h-12 object-contain border rounded bg-white p-1" />
+                  </div>
+                )}
+                {report.closing_signature && (
+                  <div>
+                    <span className="text-xs font-semibold text-gray-400 block mb-1">توقيع مشرف الليل (الختامي)</span>
+                    <p className="text-xs font-bold text-gray-700 mb-1">{report.submitted_by_name || 'مشرف الليل'}</p>
+                    <img src={report.closing_signature} alt="توقيع الليل" className="h-12 object-contain border rounded bg-white p-1" />
+                  </div>
+                )}
+              </div>
+            </Card>
 
             {/* Groups */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
