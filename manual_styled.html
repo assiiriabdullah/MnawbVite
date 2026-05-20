@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدليل الإجرائي - إدارة الموارد البشرية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"IBM Plex Sans Arabic"', 'sans-serif'],
+            },
+            colors: {
+              primary: {
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.8;
+        }
+        .page-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 60px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+        }
+        
+        /* Typography Styling */
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(to left, #10b981, #0d9488);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background: linear-gradient(to bottom, #10b981, #0d9488);
+            border-radius: 4px;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        p {
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-right: 1.5rem;
+            color: #475569;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        li::marker {
+            color: #10b981;
+            font-weight: bold;
+        }
+        strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+        hr {
+            margin: 3rem 0;
+            border-color: transparent;
+            page-break-after: always;
+            break-after: page;
+        }
+        
+        /* PDF Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            .page-wrapper {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+            h2 {
+                margin-top: 0;
+                padding-top: 20px;
+                page-break-after: avoid;
+            }
+            h3 {
+                page-break-after: avoid;
+            }
+            p, ul, li {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Custom Header for Print */
+        .cover-page {
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 50px;
+        }
+        .cover-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(to bottom right, #10b981, #0d9488);
+            border-radius: 20px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="fixed top-6 left-6 no-print">
+        <button onclick="window.print()" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-emerald-200 hover:shadow-xl hover:-translate-y-0.5 transition flex items-center gap-2">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            تصدير كملف PDF
+        </button>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="cover-page">
+            <div class="cover-logo">
+                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+            </div>
+            <h1 style="border:none; padding:0;">الدليل الإجرائي والتحليل التقني</h1>
+            <p class="text-xl text-gray-500 mt-4">نظام إدارة الموارد البشرية</p>
+            <p class="text-sm text-gray-400 mt-8">تاريخ الإصدار: 2026/05/14</p>
+        </div>
+        
+        <div class="content">
+            
+<hr>
+<h2>1. مقدمة النظام والصلاحيات</h2>
+<p>هذا النظام مصمم لتسهيل المهام الإدارية وإدارة وقت الموظفين بكل بساطة.</p>
+<h3>صلاحيات المستخدمين:</h3>
+<ul>
+<li><strong>المدير:</strong> يرى جميع الأقسام، يراقب الإحصائيات، ويقبل أو يرفض الإجازات.</li>
+<li><strong>المشرف (الضابط):</strong> يدير جلسات الحضور اليومية لمجموعته ويعتمد كشوفات المساندة.</li>
+<li><strong>الموظف (المنفذ):</strong> يسجل حضوره وانصرافه، ويطلب إجازاته، ويدير توقيعه الإلكتروني.</li>
+</ul>
+<hr>
+<h2>2. إعداد التوقيع الإلكتروني (للموظفين والمشرفين)</h2>
+<p>خطوة أساسية لمرة واحدة فقط لتوثيق جميع العمليات اللاحقة.</p>
+<p><strong>الآلية:</strong></p>
+<ol>
+<li>من القائمة الجانبية، اذهب إلى صفحة <strong>التوقيع الإلكتروني</strong>.</li>
+<li>ارسم توقيعك في المربع الأبيض المخصص.</li>
+<li>اضغط على زر <strong>حفظ التوقيع</strong>.
+<em>ملاحظة: سيقوم النظام بعد ذلك بإدراج توقيعك آلياً في كل عمليات الحضور والانصراف دون الحاجة لرسمه مجدداً.</em></li>
+</ol>
+<hr>
+<h2>3. تسجيل الحضور العادي (بوابة الموظف)</h2>
+<p>الصفحة المخصصة لإثبات الحضور والانصراف اليومي.</p>
+<p><strong>آلية المشرف:</strong></p>
+<ol>
+<li>الدخول إلى صفحة <strong>الحضور</strong>.</li>
+<li>الضغط على <strong>فتح جلسة تحضير</strong> ليبدأ وقت الدوام.</li>
+<li>في نهاية الدوام، الضغط على <strong>إغلاق الجلسة</strong>.</li>
+<li>الضغط على <strong>اعتماد ورفع الكشف</strong> لإرساله للإدارة.</li>
+</ol>
+<p><strong>آلية الموظف:</strong></p>
+<ol>
+<li>الدخول إلى صفحة <strong>الحضور</strong>.</li>
+<li>الضغط على زر <strong>تسجيل الحضور</strong> (سيتم إرفاق توقيعك المحفوظ تلقائياً).</li>
+<li>عند نهاية المناوبة، الضغط على <strong>تسجيل الانصراف</strong>.</li>
+</ol>
+<hr>
+<h2>4. كشف المساندة (مجموعات المساندة)</h2>
+<p>مخصصة للموظفين المكلفين بمهام المساندة (مثل مجموعة الصباح، العصر، الليل).</p>
+<p><strong>آلية المشرف:</strong></p>
+<ol>
+<li>الدخول لصفحة <strong>كشف المساندة</strong>.</li>
+<li>الضغط على <strong>إنشاء كشف اليوم</strong>.</li>
+<li>فتح الحضور للمجموعة المطلوبة، ثم إغلاقه بعد اكتمال التحضير.</li>
+<li>إجراء نفس الخطوات للانصراف.</li>
+<li>يمكن للمشرف تعديل حالة أي موظف (حاضر، غائب، إلخ) يدوياً.</li>
+<li>الضغط على <strong>رفع الكشف اليومي</strong>.</li>
+</ol>
+<p><strong>آلية الموظف:</strong></p>
+<ol>
+<li>الدخول لصفحة <strong>كشف المساندة</strong>.</li>
+<li>الضغط على <strong>تسجيل الحضور</strong> عند بدء الوردية.</li>
+<li>الضغط على <strong>تسجيل الانصراف</strong> عند الانتهاء.</li>
+</ol>
+<hr>
+<h2>5. طلب الإجازات (بوابة الموظف)</h2>
+<p>لطلب إجازة جديدة بشكل آلي ودقيق.</p>
+<p><strong>الآلية:</strong></p>
+<ol>
+<li>الدخول لصفحة <strong>إجازات المناوبة</strong>.</li>
+<li>الضغط على زر <strong>طلب إجازة جديد</strong>.</li>
+<li>اختيار تاريخ بداية الإجازة (بالتقويم الهجري).</li>
+<li>تحديد عدد أيام الإجازة.</li>
+<li>سيقوم النظام آلياً بحساب تاريخ النهاية وعرضه.</li>
+<li>الضغط على تقديم، لينتقل الطلب مباشرة إلى المدير لاعتماده.</li>
+</ol>
+<hr>
+<h2>6. لوحة تحكم المدير (الإدارة)</h2>
+<p>نظرة شاملة ومبسطة لمتخذي القرار.</p>
+<p><strong>أبرز الصفحات:</strong></p>
+<ul>
+<li><strong>الرئيسية (Overview):</strong> إحصائيات سريعة للحضور والإجازات.</li>
+<li><strong>الموظفين:</strong> إضافة موظفين جدد أو تعديل بياناتهم ومجموعاتهم.</li>
+<li><strong>سجلات الحضور وكشوفات المساندة:</strong> استعراض الكشوفات المرفوعة من المشرفين والاطلاع على تفاصيل الحضور لكل موظف.</li>
+<li><strong>الإجازات:</strong> الموافقة على طلبات الإجازات المقدمة أو رفضها.</li>
+</ul>
+
+        </div>
+    </div>
+</body>
+</html>
